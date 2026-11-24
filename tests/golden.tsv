@@ -1,0 +1,3 @@
+# title	expected_image_hash (exact pixel/data output)
+t_d3d12_triangle	d8ee3505
+t_d3d12_compute	673c9dc5

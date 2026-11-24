@@ -20,6 +20,8 @@ run() { # name expected_exit [env...]
   local ok=0
   [[ $rc -eq $want ]] && ok=1
   [[ $want -eq 0 ]] && ! grep -q "RESULT PASS" <<<"$out" && ok=0
+  local gold; gold=$(awk -v t="$t" '$1==t{print $2}' tests/golden.tsv)
+  if [[ -n $gold ]] && ! grep -q "IMAGE hash=$gold" <<<"$out"; then ok=0; echo "      image hash mismatch: wanted $gold"; fi
   if ((ok)); then pass=$((pass+1)); echo "PASS  $t (${ms} ms)"; r=PASS
   else fail=$((fail+1)); echo "FAIL  $t (exit $rc, wanted $want)"; sed 's/^/      /' <<<"$out" | grep -v -E "rundll32|configuration" ; r=FAIL; fi
   local ih=$(sed -n 's/^IMAGE hash=\([0-9a-f]*\).*/\1/p' <<<"$out")
