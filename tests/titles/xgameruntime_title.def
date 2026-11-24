@@ -1,0 +1,30 @@
+; What test titles import from xgameruntime.dll. Includes XUserAddAsync, which
+; JackBox does not implement, to exercise the diagnostics path.
+LIBRARY xgameruntime.dll
+EXPORTS
+  XGameRuntimeInitialize
+  XGameRuntimeUninitialize
+  XGameGetXboxTitleId
+  XSystemGetDeviceType
+  XSystemGetConsoleId
+  XTaskQueueCreate
+  XTaskQueueCloseHandle
+  XTaskQueueSubmitCallback
+  XTaskQueueSubmitDelayedCallback
+  XTaskQueueDispatch
+  XTaskQueueTerminate
+  XTaskQueueGetCurrentProcessTaskQueue
+  XAsyncBegin
+  XAsyncSchedule
+  XAsyncComplete
+  XAsyncGetStatus
+  XAsyncGetResultSize
+  XAsyncGetResult
+  XAsyncCancel
+  XAsyncRun
+  XUserAddAsync
+  XUserAddResult
+  XUserGetId
+  XUserGetGamertag
+  XUserCloseHandle
+  XPackageGetCurrentProcessPackageIdentifier
