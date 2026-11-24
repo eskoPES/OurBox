@@ -19,7 +19,7 @@ TESTS_CXX   := $(patsubst tests/titles/%.cpp,$(OUT)/titles/%.exe,$(wildcard test
 
 TLS_HELPERS := $(foreach n,1 2 3 4 5 6 7,$(OUT)/jb_tls$(n).dll)
 
-all: $(OUT)/jackbox.exe $(OUT)/xgameruntime.dll $(TLS_HELPERS) $(OUT)/titles/MicrosoftGame.config titles
+all: $(OUT)/jackbox.exe $(OUT)/xgameruntime.dll $(OUT)/jb_d3d12x.dll $(TLS_HELPERS) $(OUT)/titles/MicrosoftGame.config titles
 
 $(OUT)/jb_tls%.dll: runtime/tlsslot/jb_tls.c | $(OUT)
 	$(TCC) -O2 -shared -o $@ $<
@@ -38,6 +38,12 @@ $(OUT)/jackbox.exe: loader/jackbox.c loader/jb_support.c loader/jb_loader.h | $(
 $(OUT)/xgameruntime.dll: $(RUNTIME_SRC) runtime/xgameruntime/xgr.h runtime/xgameruntime/xgameruntime.def | $(OUT)
 	$(CC) $(CFLAGS) -shared -o $@ $(RUNTIME_SRC) runtime/xgameruntime/xgameruntime.def $(LDSTATIC)
 
+$(OUT)/jb_d3d12x.dll: runtime/d3d12x/jb_d3d12x.c | $(OUT)
+	$(CC) $(CFLAGS) -shared -o $@ $< -luuid -ldxguid $(LDSTATIC)
+
+$(OUT)/lib/libd3d12_title.a: tests/titles/d3d12_title.def | $(OUT)/lib
+	$(DLLTOOL) -d $< -l $@
+
 # Import library for test titles. tests/titles/xgameruntime_title.def lists
 # what titles import, including functions JackBox does not implement yet, so
 # the diagnostics path can be exercised.
@@ -49,8 +55,8 @@ titles: $(TESTS_C) $(TESTS_CXX) $(OUT)/titles/libtitledll.dll
 $(OUT)/titles/libtitledll.dll: tests/titles/dll/titledll.c | $(OUT)/titles
 	$(CC) $(CFLAGS) -shared -o $@ $< -Wl,--image-base,0x140000000 -Wl,--dynamicbase -Wl,--out-implib,$(OUT)/lib/libtitledll.a $(LDSTATIC)
 
-$(OUT)/titles/%.exe: tests/titles/%.c $(OUT)/lib/libxgameruntime_title.a $(OUT)/titles/libtitledll.dll | $(OUT)/titles
-	$(TCC) $(CFLAGS) -o $@ $< -L$(OUT)/lib -lxgameruntime_title -ltitledll -Wl,--dynamicbase
+$(OUT)/titles/%.exe: tests/titles/%.c tests/titles/jbtest.h $(OUT)/lib/libxgameruntime_title.a $(OUT)/lib/libd3d12_title.a $(OUT)/titles/libtitledll.dll | $(OUT)/titles
+	$(TCC) $(CFLAGS) -o $@ $< -L$(OUT)/lib -lxgameruntime_title -ltitledll -ld3d12_title -ldxguid -luuid -Wl,--dynamicbase
 
 $(OUT)/titles/%.exe: tests/titles/%.cpp $(OUT)/lib/libxgameruntime_title.a | $(OUT)/titles
 	$(TCXX) $(CFLAGS) -o $@ $< -static -Wl,--dynamicbase

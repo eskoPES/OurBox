@@ -12,7 +12,8 @@ Passing them is not evidence of Xbox console compatibility.**
 | M1c | Diagnostics: unresolved imports listed at load, bound to traps that report `dll!func` + call site, abort or `E_NOTIMPL` policy; crash filter reports `module+offset`; report file with peak memory | done | t_unimpl (both policies) |
 | M1d | XGameRuntime core, XSystem, XTaskQueue (manual, thread pool, serialized, immediate, delayed, terminate) and XAsync (provider model, results, cancel, XAsyncRun) | done | t_xgameruntime |
 | M1e | Loader overrides so the title sees itself: GetModuleHandle(NULL), GetModuleFileName, GetCommandLine | done | t_basic |
-| M2 | D3D12 path: `jb_d3d12x.dll` + offscreen triangle title, pixel readback checksum, frame time | next | |
+| M2 | D3D12 path: title imports `d3d12_xs.dll`, loader redirects to `jb_d3d12x.dll`, which drives the host's hardware D3D12 (native on Windows, vkd3d on Vulkan under Wine). Graphics: offscreen triangle, pixel readback, exact coverage check, frame time. Compute: 1M-thread dispatch through a typed UAV descriptor table, every element verified | done | t_d3d12_triangle, t_d3d12_compute |
+| M2b | Ray tracing (DXR) title | blocked in cloud CI: vkd3d and llvmpipe have no DXR. Will run on a real GPU (RTX 4090) | |
 | M3 | Shader pipeline: DXIL via host; console precompiled shader blobs | blocked (see below) | |
 | M4 | Virtual memory: XMemAlloc-style APIs, fixed-address and large-page mappings, GPU-visible memory | planned | |
 | M5 | GameInput -> host input, XAudio2 via host, XUser/XGameSave offline | planned | |
@@ -39,7 +40,13 @@ Passing them is not evidence of Xbox console compatibility.**
 4. **Retail content is encrypted** with keys held in console hardware. Out of
    scope by design: JackBox never decrypts retail packages.
 
-## Measured (cloud CI under Wine 9.0, no GPU)
+## Measured (cloud CI under Wine 9.0, software Vulkan: llvmpipe)
 
 See `build/win64/results.tsv` after a run: per-title result, exit code, wall
-time (dominated by Wine startup, about 2.5 s) and peak working set.
+time (dominated by Wine startup, about 2.5 s), peak working set, rendered
+image hash and average frame time. Latest: triangle 0.38 ms/frame, 1M-thread
+compute dispatch 17 ms (CPU rasterizer, not representative of a GPU).
+
+Note: Wine's built-in HLSL compiler (vkd3d-shader) lacks some features, e.g.
+structured-buffer stores; test shaders avoid them. Console titles ship
+precompiled shaders, so this only affects test authoring.
