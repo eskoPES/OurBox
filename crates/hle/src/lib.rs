@@ -25,16 +25,32 @@ pub struct ModuleInfo {
     pub implemented: &'static [&'static str],
 }
 
-/// Exports implemented in runtime/xgameruntime/xgameruntime.c. Keep in sync;
-/// a test in the runtime build checks the DLL's export table against this.
+/// Exports implemented by runtime/xgameruntime (see xgameruntime.def). Keep in
+/// sync; crates/cli/tests/runtime.rs checks the built DLL against this list.
 pub const XGAMERUNTIME_IMPLEMENTED: &[&str] = &[
     "XGameRuntimeInitialize",
     "XGameRuntimeUninitialize",
     "XGameGetXboxTitleId",
-    "XSystemGetConsoleId",
     "XSystemGetDeviceType",
+    "XSystemGetConsoleId",
     "XTaskQueueCreate",
+    "XTaskQueueDuplicateHandle",
     "XTaskQueueCloseHandle",
+    "XTaskQueueSubmitCallback",
+    "XTaskQueueSubmitDelayedCallback",
+    "XTaskQueueDispatch",
+    "XTaskQueueIsEmpty",
+    "XTaskQueueTerminate",
+    "XTaskQueueGetCurrentProcessTaskQueue",
+    "XTaskQueueSetCurrentProcessTaskQueue",
+    "XAsyncBegin",
+    "XAsyncSchedule",
+    "XAsyncComplete",
+    "XAsyncGetStatus",
+    "XAsyncGetResultSize",
+    "XAsyncGetResult",
+    "XAsyncCancel",
+    "XAsyncRun",
 ];
 
 pub const MODULES: &[ModuleInfo] = &[

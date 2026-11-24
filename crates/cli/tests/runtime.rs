@@ -1,32 +1,31 @@
-//! Builds the runtime with runtime/build.sh (needs clang + lld-link) and checks
-//! that the real DLL and the HLE catalog agree. Skips if the toolchain is absent.
+//! Checks the MinGW-built runtime (make) against the HLE catalog, and the
+//! coverage report against a test title. Skips if `make` has not been run.
 
 use std::path::PathBuf;
-use std::process::Command;
 
-fn root() -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..")
-}
-
-fn build_runtime() -> Option<PathBuf> {
-    let ok = Command::new("bash").arg(root().join("runtime/build.sh")).status().ok()?.success();
-    ok.then(|| root().join("runtime/build"))
+fn out() -> PathBuf {
+    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../build/win64")
 }
 
 #[test]
-fn dll_exports_match_catalog_and_sample_coverage() {
-    let Some(out) = build_runtime() else {
-        eprintln!("skipping: clang/lld-link not available");
+fn dll_exports_match_catalog() {
+    let Ok(bytes) = std::fs::read(out().join("xgameruntime.dll")) else {
+        eprintln!("skipping: run `make` first");
         return;
     };
-    let dll = jackbox_pe::parse(&std::fs::read(out.join("xgameruntime.dll")).unwrap()).unwrap();
-    let mut exported: Vec<_> = dll.exports.iter().filter(|e| !e.starts_with("JackBox")).cloned().collect();
+    let dll = jackbox_pe::parse(&bytes).unwrap();
+    let mut exported = dll.exports.clone();
     let mut catalog: Vec<_> = jackbox_hle::XGAMERUNTIME_IMPLEMENTED.iter().map(|s| s.to_string()).collect();
     exported.sort();
     catalog.sort();
     assert_eq!(exported, catalog, "runtime exports and hle catalog are out of sync");
+}
 
-    let exe = jackbox_pe::parse(&std::fs::read(out.join("hello.exe")).unwrap()).unwrap();
+#[test]
+fn coverage_flags_unimplemented_title_import() {
+    let Ok(bytes) = std::fs::read(out().join("titles/t_unimpl.exe")) else { return };
+    let exe = jackbox_pe::parse(&bytes).unwrap();
     let cov = jackbox_hle::coverage(&exe.imports);
-    assert_eq!(cov.jackbox_totals(), (3, 4));
+    let xgr = cov.modules.iter().find(|m| m.dll.eq_ignore_ascii_case("xgameruntime.dll")).unwrap();
+    assert_eq!(xgr.missing, vec!["XUserAddAsync".to_string()]);
 }

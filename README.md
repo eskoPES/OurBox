@@ -5,9 +5,16 @@ in the spirit of Wine/Proton: game code is x86-64 like a PC, so it runs
 natively, and JackBox replaces the Xbox-only system interfaces (XGameRuntime,
 GameInput, D3D12.X...) underneath it.
 
-**Status: v0.1 scaffold.** Nothing playable yet. See
-[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the plan, the honest limits,
-and the roadmap.
+**Status: v0.2.** A native loader (`jackbox.exe`) maps and runs x86-64 PE
+titles against a clean-room `xgameruntime.dll`. No retail title runs. See
+[docs/STATUS.md](docs/STATUS.md) for milestones, measurements and blockers,
+and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the design.
+
+```sh
+make                 # cross-builds loader, runtime and test titles (MinGW-w64 + clang)
+make test            # runs the title regression suite (Wine on Linux, native on Windows)
+build/win64/jackbox.exe path\to\title.exe   # on Windows
+```
 
 ## What works today
 

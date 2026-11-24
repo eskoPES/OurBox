@@ -1,8 +1,0 @@
-; Import stubs for GDK functions JackBox does not implement yet, so the sample
-; links. The real DLL will not export these until they are implemented.
-LIBRARY xgameruntime.dll
-EXPORTS
-  XGameRuntimeInitialize
-  XGameGetXboxTitleId
-  XSystemGetDeviceType
-  XUserAddAsync
