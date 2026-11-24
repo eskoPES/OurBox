@@ -91,3 +91,5 @@ XGR_API HRESULT XUserGetGamertag(XUserHandle h, int32_t component, size_t size, 
     memcpy(out, h->gamertag, n);
     return S_OK;
 }
+
+uint64_t xgr_user_xuid(const void *user) { return user == &g_user ? g_user.xuid : 0; }

@@ -12,7 +12,7 @@ if [[ -z "${DISPLAY:-}" ]]; then
   fi
 fi
 pass=(DISPLAY="$DISPLAY")
-while IFS='=' read -r k _; do [[ $k == JACKBOX_* ]] && pass+=("$k=${!k}"); done < <(env)
+while IFS="=" read -r k _; do [[ $k == JACKBOX_* || $k == OURBOX_* ]] && pass+=("$k=${!k}"); done < <(env)
 exec env -i PATH=/usr/bin:/bin:/usr/lib/wine HOME="$HOME" \
   WINEPREFIX="${WINEPREFIX:-/tmp/jackbox-wineprefix}" WINEDEBUG="${WINEDEBUG:--all}" \
   "${pass[@]}" wine64 "$@"

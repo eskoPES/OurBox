@@ -53,3 +53,7 @@ XGR_API HRESULT XTaskQueueSubmitCallback(XTaskQueueHandle q, XTaskQueuePort port
 XGR_API HRESULT XTaskQueueSubmitDelayedCallback(XTaskQueueHandle q, XTaskQueuePort port, uint32_t delayMs, void *ctx, XTaskQueueCallback *cb);
 XGR_API bool XTaskQueueGetCurrentProcessTaskQueue(XTaskQueueHandle *q);
 XGR_API void XTaskQueueCloseHandle(XTaskQueueHandle q);
+
+/* internal helpers shared between modules */
+uint32_t xgr_title_id(void);                 /* 0 if unknown */
+uint64_t xgr_user_xuid(const void *user);    /* 0 if not a valid user */

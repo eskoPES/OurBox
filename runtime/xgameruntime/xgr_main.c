@@ -31,6 +31,8 @@ static void load_title_id(void)
     XGR_LOG("MicrosoftGame.config TitleId=%08X", g_title_id);
 }
 
+uint32_t xgr_title_id(void) { return g_title_id_known ? g_title_id : 0; }
+
 XGR_API HRESULT XGameRuntimeInitialize(void)
 {
     if (InterlockedIncrement(&g_init_count) == 1) {

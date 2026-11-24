@@ -28,3 +28,24 @@ EXPORTS
   XUserGetGamertag
   XUserCloseHandle
   XPackageGetCurrentProcessPackageIdentifier
+  XGameSaveInitializeProvider
+  XGameSaveInitializeProviderAsync
+  XGameSaveInitializeProviderResult
+  XGameSaveCloseProvider
+  XGameSaveGetRemainingQuota
+  XGameSaveCreateContainer
+  XGameSaveCloseContainer
+  XGameSaveDeleteContainer
+  XGameSaveGetContainerInfo
+  XGameSaveEnumerateContainerInfo
+  XGameSaveEnumerateContainerInfoByName
+  XGameSaveEnumerateBlobInfo
+  XGameSaveEnumerateBlobInfoByName
+  XGameSaveReadBlobData
+  XGameSaveCreateUpdate
+  XGameSaveCloseUpdate
+  XGameSaveSubmitBlobWrite
+  XGameSaveSubmitBlobDelete
+  XGameSaveSubmitUpdate
+  XGameSaveSubmitUpdateAsync
+  XGameSaveSubmitUpdateResult

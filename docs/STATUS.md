@@ -1,4 +1,6 @@
-# JackBox status and milestones
+# OurBox status and milestones
+
+_The project was renamed from JackBox to OurBox. Existing identifiers (jackbox.exe, JACKBOX_* variables) keep their names; new ones use OurBox._
 
 Each milestone has a pass/fail check that `make test` (or `tests/run_titles.sh`)
 runs. Test titles are Windows-ABI x86-64 programs built with clang
@@ -18,7 +20,8 @@ Passing them is not evidence of Xbox console compatibility.**
 | M4b | XMemAlloc/XMemFree and GPU-visible memory types | blocked: attribute bitfield layout not verified publicly | |
 | M4 | Title memory interposer: VirtualAlloc/VirtualFree accounting (current, peak), large-page fallback, stripping of non-host flags with one-time log | done | t_memory |
 | M5a | XUser offline local player (add, result, id, gamertag, state) via XAsync | done | t_xgameruntime |
-| M5b | GameInput, XGameSave, XAudio2 | next. GameInput is a COM interface whose vtable order is only in the GDK header; needs verification against the public PC GDK before shipping (guess risk) | |
+| M5c | XGameSave local store: providers (sync + async), containers, blobs, enumeration, read, quota, crash-safe journaled updates, persistence; saves under `%LOCALAPPDATA%\\OurBox\\saves` or `OURBOX_SAVE_DIR` | done | t_gamesave |
+| M5b | GameInput, XAudio2 | next. GameInput is a COM interface whose vtable order is only in the GDK header; needs verification against the public PC GDK before shipping (guess risk) | |
 
 ## Precise blockers
 

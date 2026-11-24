@@ -37,6 +37,7 @@ run t_tls 0
 run t_seh 0
 run t_xgameruntime 0
 run t_memory 0
+run t_gamesave 0
 run t_d3d12_triangle 0
 run t_d3d12_compute 0
 # Unimplemented import: trap fires, loader exits JB_EXIT_UNIMPLEMENTED (0x4A420002;
