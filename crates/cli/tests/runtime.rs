@@ -27,5 +27,5 @@ fn coverage_flags_unimplemented_title_import() {
     let exe = jackbox_pe::parse(&bytes).unwrap();
     let cov = jackbox_hle::coverage(&exe.imports);
     let xgr = cov.modules.iter().find(|m| m.dll.eq_ignore_ascii_case("xgameruntime.dll")).unwrap();
-    assert_eq!(xgr.missing, vec!["XUserAddAsync".to_string()]);
+    assert_eq!(xgr.missing, vec!["XPackageGetCurrentProcessPackageIdentifier".to_string()]);
 }

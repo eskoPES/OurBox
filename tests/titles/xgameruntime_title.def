@@ -23,3 +23,8 @@ EXPORTS
   XAsyncCancel
   XAsyncRun
   XUserAddAsync
+  XUserAddResult
+  XUserGetId
+  XUserGetGamertag
+  XUserCloseHandle
+  XPackageGetCurrentProcessPackageIdentifier

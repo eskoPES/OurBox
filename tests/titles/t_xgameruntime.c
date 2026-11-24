@@ -27,6 +27,12 @@ __declspec(dllimport) HRESULT XAsyncGetResultSize(XAsyncBlock *, size_t *);
 __declspec(dllimport) HRESULT XAsyncGetResult(XAsyncBlock *, const void *, size_t, void *, size_t *);
 __declspec(dllimport) void XAsyncCancel(XAsyncBlock *);
 __declspec(dllimport) HRESULT XAsyncRun(XAsyncBlock *, HRESULT (CALLBACK *)(XAsyncBlock *));
+typedef struct XUser *XUserHandle;
+__declspec(dllimport) HRESULT XUserAddAsync(uint32_t, XAsyncBlock *);
+__declspec(dllimport) HRESULT XUserAddResult(XAsyncBlock *, XUserHandle *);
+__declspec(dllimport) HRESULT XUserGetId(XUserHandle, uint64_t *);
+__declspec(dllimport) HRESULT XUserGetGamertag(XUserHandle, int32_t, size_t, char *, size_t *);
+__declspec(dllimport) void XUserCloseHandle(XUserHandle);
 
 enum { Manual, ThreadPool, Serialized, Immediate };
 enum { Work, Completion };
@@ -129,5 +135,15 @@ int main(void)
     memset(&ab, 0, sizeof ab);
     CHECK(XAsyncRun(&ab, run_work) == S_OK);
     CHECK(XAsyncGetStatus(&ab, true) == HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND));
+
+    /* Offline local user sign-in through the async model. */
+    memset(&ab, 0, sizeof ab);
+    CHECK(XUserAddAsync(1 /* AddDefaultUserSilently (guess) */, &ab) == S_OK);
+    CHECK(XAsyncGetStatus(&ab, true) == S_OK);
+    XUserHandle user = NULL;
+    CHECK(XUserAddResult(&ab, &user) == S_OK && user);
+    uint64_t xuid = 0; CHECK(XUserGetId(user, &xuid) == S_OK && xuid != 0);
+    char tag[32]; CHECK(XUserGetGamertag(user, 0, sizeof tag, tag, &used) == S_OK && strcmp(tag, "JackBoxPlayer") == 0);
+    XUserCloseHandle(user);
     DONE();
 }

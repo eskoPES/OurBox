@@ -15,8 +15,10 @@ Passing them is not evidence of Xbox console compatibility.**
 | M2 | D3D12 path: title imports `d3d12_xs.dll`, loader redirects to `jb_d3d12x.dll`, which drives the host's hardware D3D12 (native on Windows, vkd3d on Vulkan under Wine). Graphics: offscreen triangle, pixel readback, exact coverage check, frame time. Compute: 1M-thread dispatch through a typed UAV descriptor table, every element verified | done | t_d3d12_triangle, t_d3d12_compute |
 | M2b | Ray tracing (DXR) title | blocked in cloud CI: vkd3d and llvmpipe have no DXR. Will run on a real GPU (RTX 4090) | |
 | M3 | Shader pipeline: DXIL via host; console precompiled shader blobs | blocked (see below) | |
-| M4 | Virtual memory: XMemAlloc-style APIs, fixed-address and large-page mappings, GPU-visible memory | planned | |
-| M5 | GameInput -> host input, XAudio2 via host, XUser/XGameSave offline | planned | |
+| M4b | XMemAlloc/XMemFree and GPU-visible memory types | blocked: attribute bitfield layout not verified publicly | |
+| M4 | Title memory interposer: VirtualAlloc/VirtualFree accounting (current, peak), large-page fallback, stripping of non-host flags with one-time log | done | t_memory |
+| M5a | XUser offline local player (add, result, id, gamertag, state) via XAsync | done | t_xgameruntime |
+| M5b | GameInput, XGameSave, XAudio2 | next. GameInput is a COM interface whose vtable order is only in the GDK header; needs verification against the public PC GDK before shipping (guess risk) | |
 
 ## Precise blockers
 

@@ -23,3 +23,13 @@ EXPORTS
   XAsyncGetResult
   XAsyncCancel
   XAsyncRun
+  XUserAddAsync
+  XUserAddResult
+  XUserDuplicateHandle
+  XUserCloseHandle
+  XUserGetId
+  XUserGetLocalId
+  XUserGetIsGuest
+  XUserGetState
+  XUserCompare
+  XUserGetGamertag

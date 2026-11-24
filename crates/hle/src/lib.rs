@@ -51,6 +51,16 @@ pub const XGAMERUNTIME_IMPLEMENTED: &[&str] = &[
     "XAsyncGetResult",
     "XAsyncCancel",
     "XAsyncRun",
+    "XUserAddAsync",
+    "XUserAddResult",
+    "XUserDuplicateHandle",
+    "XUserCloseHandle",
+    "XUserGetId",
+    "XUserGetLocalId",
+    "XUserGetIsGuest",
+    "XUserGetState",
+    "XUserCompare",
+    "XUserGetGamertag",
 ];
 
 pub const MODULES: &[ModuleInfo] = &[
@@ -154,11 +164,11 @@ mod tests {
             ImportedModule { dll: "kernel32.dll".into(), symbols: vec![named("Sleep")] },
             ImportedModule {
                 dll: "xgameruntime.dll".into(),
-                symbols: vec![named("XGameRuntimeInitialize"), named("XUserAddAsync")],
+                symbols: vec![named("XGameRuntimeInitialize"), named("XPackageGetCurrentProcessPackageIdentifier")],
             },
         ];
         let c = coverage(&imports);
         assert_eq!(c.jackbox_totals(), (1, 2));
-        assert_eq!(c.modules[1].missing, vec!["XUserAddAsync".to_string()]);
+        assert_eq!(c.modules[1].missing, vec!["XPackageGetCurrentProcessPackageIdentifier".to_string()]);
     }
 }
