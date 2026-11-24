@@ -31,8 +31,8 @@ $(OUT)/titles/MicrosoftGame.config: tests/titles/MicrosoftGame.config | $(OUT)/t
 $(OUT) $(OUT)/titles $(OUT)/lib:
 	mkdir -p $@
 
-$(OUT)/jackbox.exe: loader/jackbox.c loader/jb_support.c loader/jb_loader.h | $(OUT)
-	$(CC) $(CFLAGS) -o $@ loader/jackbox.c loader/jb_support.c -lpsapi $(LDSTATIC) \
+$(OUT)/jackbox.exe: loader/jackbox.c loader/jb_support.c loader/jb_memory.c loader/jb_loader.h | $(OUT)
+	$(CC) $(CFLAGS) -o $@ loader/jackbox.c loader/jb_support.c loader/jb_memory.c -lpsapi $(LDSTATIC) \
 	  -Wl,--image-base,0x7ff700000000 -Wl,--dynamicbase -Wl,--high-entropy-va
 
 $(OUT)/xgameruntime.dll: $(RUNTIME_SRC) runtime/xgameruntime/xgr.h runtime/xgameruntime/xgameruntime.def | $(OUT)

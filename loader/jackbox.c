@@ -71,6 +71,9 @@ static void write_report(void)
     if (jb_get_memory_counters(&pmc))
         fprintf(f, "memory peak_working_set=%llu peak_commit=%llu\n",
                 (unsigned long long)pmc.PeakWorkingSetSize, (unsigned long long)pmc.PeakPagefileUsage);
+    JbMemStats ms; jb_memory_stats(&ms);
+    fprintf(f, "title_memory committed=%llu peak_committed=%llu allocations=%lu large_page_fallbacks=%lu stripped_flag_calls=%lu\n",
+            (unsigned long long)ms.committed, (unsigned long long)ms.peak_committed, ms.allocations, ms.large_page_fallbacks, ms.stripped_flag_calls);
     fprintf(f, "unresolved_imports %d\n", g_unresolved_count);
     for (Unresolved *u = g_unresolved; u; u = u->next)
         fprintf(f, "unresolved %s!%s hits=%ld\n", u->dll, u->name, u->hits);

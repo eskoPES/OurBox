@@ -7,7 +7,7 @@ cd "$(dirname "$0")/.."
 B=build/win64
 if [[ "$(uname -s)" == MINGW* || "$(uname -s)" == MSYS* ]]; then RUN=(); else RUN=(tools/wine.sh); fi
 pass=0; fail=0
-printf "title\tresult\texit\tms\tpeak_working_set\tunresolved\timage_hash\tavg_frame_ms\n" > $B/results.tsv
+printf "title\tresult\texit\tms\tpeak_working_set\ttitle_peak_committed\tunresolved\timage_hash\tavg_frame_ms\n" > $B/results.tsv
 run() { # name expected_exit [env...]
   local t=$1 want=$2; shift 2
   local rep; rep=$(mktemp)
@@ -16,6 +16,7 @@ run() { # name expected_exit [env...]
   local rc=$?
   local ms=$(( ($(date +%s%N) - t0) / 1000000 ))
   local ws=$(sed -n 's/^memory peak_working_set=\([0-9]*\).*/\1/p' "$rep")
+  local tm=$(sed -n 's/^title_memory .*peak_committed=\([0-9]*\).*/\1/p' "$rep")
   local un=$(sed -n 's/^unresolved_imports //p' "$rep")
   local ok=0
   [[ $rc -eq $want ]] && ok=1
@@ -26,7 +27,7 @@ run() { # name expected_exit [env...]
   else fail=$((fail+1)); echo "FAIL  $t (exit $rc, wanted $want)"; sed 's/^/      /' <<<"$out" | grep -v -E "rundll32|configuration" ; r=FAIL; fi
   local ih=$(sed -n 's/^IMAGE hash=\([0-9a-f]*\).*/\1/p' <<<"$out")
   local fm=$(sed -n 's/^PERF .*avg_frame_ms=\([0-9.]*\).*/\1/p' <<<"$out")
-  printf "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n" "$t" "$r" "$rc" "$ms" "${ws:-}" "${un:-}" "${ih:-}" "${fm:-}" >> $B/results.tsv
+  printf "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n" "$t" "$r" "$rc" "$ms" "${ws:-}" "${tm:-}" "${un:-}" "${ih:-}" "${fm:-}" >> $B/results.tsv
   rm -f "$rep"
 }
 winepath_of() { if ((${#RUN[@]})); then echo "Z:${1//\//\\}"; else echo "$1"; fi; }
@@ -35,6 +36,7 @@ run t_basic 0
 run t_tls 0
 run t_seh 0
 run t_xgameruntime 0
+run t_memory 0
 run t_d3d12_triangle 0
 run t_d3d12_compute 0
 # Unimplemented import: trap fires, loader exits JB_EXIT_UNIMPLEMENTED (0x4A420002;

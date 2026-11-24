@@ -16,3 +16,11 @@ void jb_set_title_image(void *base, const char *title_path);
  * the title rather than jackbox.exe (module handle, file name, command line). */
 void *jb_host_override(const char *dll, const char *func);
 int jb_get_memory_counters(PROCESS_MEMORY_COUNTERS_EX_JB *out);
+
+typedef struct {
+    SIZE_T committed, peak_committed;
+    unsigned long allocations, large_page_fallbacks, stripped_flag_calls;
+} JbMemStats;
+LPVOID WINAPI jb_VirtualAlloc(LPVOID addr, SIZE_T size, DWORD type, DWORD prot);
+BOOL WINAPI jb_VirtualFree(LPVOID addr, SIZE_T size, DWORD type);
+void jb_memory_stats(JbMemStats *out);

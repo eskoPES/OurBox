@@ -92,6 +92,7 @@ void *jb_host_override(const char *dll, const char *func)
         { "GetModuleHandleExA", ov_GetModuleHandleExA }, { "GetModuleHandleExW", ov_GetModuleHandleExW },
         { "GetModuleFileNameA", ov_GetModuleFileNameA }, { "GetModuleFileNameW", ov_GetModuleFileNameW },
         { "GetCommandLineA", ov_GetCommandLineA }, { "GetCommandLineW", ov_GetCommandLineW },
+        { "VirtualAlloc", jb_VirtualAlloc }, { "VirtualFree", jb_VirtualFree },
     };
     for (size_t i = 0; i < sizeof t / sizeof *t; i++) if (!strcmp(func, t[i].name)) return t[i].fn;
     return NULL;
