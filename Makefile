@@ -58,6 +58,16 @@ $(OUT)/titles/libtitledll.dll: tests/titles/dll/titledll.c | $(OUT)/titles
 $(OUT)/titles/%.exe: tests/titles/%.c tests/titles/jbtest.h $(OUT)/lib/libxgameruntime_title.a $(OUT)/lib/libd3d12_title.a $(OUT)/titles/libtitledll.dll | $(OUT)/titles
 	$(TCC) $(CFLAGS) -o $@ $< -L$(OUT)/lib -lxgameruntime_title -ltitledll -ld3d12_title -ldxguid -luuid -Wl,--dynamicbase
 
+# DXR title: needs DirectX-Headers (MIT; apt: directx-headers-dev) for DXR
+# interfaces that MinGW's d3d12.h lacks. Its DXIL is compiled separately.
+DXHEADERS ?= /usr/include
+$(OUT)/dxinc: | $(OUT)
+	mkdir -p $@ && ln -sfn $(DXHEADERS)/directx $@/directx && ln -sfn $(DXHEADERS)/dxguids $@/dxguids
+
+$(OUT)/titles/t_d3d12_raytrace.exe: tests/titles/t_d3d12_raytrace.cpp $(OUT)/lib/libd3d12_title.a | $(OUT)/titles $(OUT)/dxinc
+	$(TCXX) -O2 -g -Wall -D__REQUIRED_RPCNDR_H_VERSION__=475 -I$(OUT)/dxinc -o $@ $< -L$(OUT)/lib -ld3d12_title -static -Wl,--dynamicbase
+	-cp tests/titles/shaders/rt.dxil $(OUT)/titles/ 2>/dev/null
+
 $(OUT)/titles/%.exe: tests/titles/%.cpp $(OUT)/lib/libxgameruntime_title.a | $(OUT)/titles
 	$(TCXX) $(CFLAGS) -o $@ $< -static -Wl,--dynamicbase
 
