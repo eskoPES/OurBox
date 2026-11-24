@@ -1,0 +1,7 @@
+; Test titles import D3D12 from the console module name, so the loader's
+; redirect to jb_d3d12x.dll is exercised. (guess: console module name)
+LIBRARY d3d12_xs.dll
+EXPORTS
+  D3D12CreateDevice
+  D3D12SerializeRootSignature
+  D3D12GetDebugInterface

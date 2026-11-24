@@ -1,0 +1,10 @@
+[package]
+name = "jackbox"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+jackbox-xvd = { path = "../xvd" }
+jackbox-pe = { path = "../pe" }
+jackbox-hle = { path = "../hle" }
